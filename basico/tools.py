@@ -23,6 +23,8 @@ def get_color(name_of_color:str):
                 "gray": (128, 128, 128),
                 "light_gray": (211, 211, 211),
                 "dark_gray": (64, 64, 64),
+                "very_dark": (20,20,20),
+                "dark": (15,15,15),
                 "orange": (255, 165, 0),
                 "purple": (128, 0, 128),
                 "pink": (255, 192, 203),

@@ -19,6 +19,7 @@ class Button:
                  command:callable = None,
                  tags:callable = None):
         
+        self.clicked = -1
         self.window = window
         self.size = size
         self.color = get_color(color)
@@ -32,8 +33,6 @@ class Button:
         self.width = width 
         self.border_radios = border_radios
     def pack(self):
-        if self.background is not None:
-            self.insert_background()
         self.color = get_color(self.color)
 
         self.rect = draw_rect(self.window,self.size,self.coordinate, self.color, self.width, self.border_radios)
@@ -45,6 +44,8 @@ class Button:
         self.title_coordinate = get_mid(object_size=self.size,
                                         object_size_target=self.title_size_blit,
                                         coordinate_object=self.coordinate)
+        if self.background is not None:
+            self.insert_background()
         self.window.blit(source=self.title,dest=self.title_coordinate)
         if self.tags:
             self.tags()
@@ -53,6 +54,8 @@ class Button:
             pos:Union[List[int],Tuple[int, int]]):
         self.verify = self.rect.collidepoint(pos)
         if self.verify == True:
+            self.clicked = self.clicked *-1
+            print(self.clicked)
             self.command()
     def insert_background(self):
         from basico.tools import get_image

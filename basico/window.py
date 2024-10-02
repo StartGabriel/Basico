@@ -15,7 +15,7 @@ class Window:
         self.background = background
         
     def pack(self):
-        self.window_surface = pygame.display.set_mode(size=self.size)
+        self.window_surface = pygame.display.set_mode(self.size, pygame.SRCALPHA)
         self.window_surface.fill(self.color)
         self.background = get_image(scale=self.size, coordinates=(0,0), path= self.background, window= self.window_surface)
         return self.window_surface
