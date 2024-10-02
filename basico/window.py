@@ -2,7 +2,7 @@ import pygame
 
 from typing import Union, List, Tuple
 
-from tools import get_color, get_image
+from basico.tools import get_color, get_image
 pygame.init()
 
 class Window:

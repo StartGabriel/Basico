@@ -48,7 +48,9 @@ def draw_rect(window:pygame.Surface,
             size:Union[list[int], Tuple[int,int]],
             coordinate:tuple,
             color:tuple,
-            width:int):
+            width:int,
+            border_radios:int,
+            tag:str=None):
     """Desenha um retangulo na tela
 
     Args:
@@ -62,17 +64,12 @@ def draw_rect(window:pygame.Surface,
         rect: retorna um objeto rect pygame
     """
 
-    rect_values = (coordinate[0],
-                   coordinate[1],
-                   size[0],
-                   size[1])
+    
     
     color_tuple = get_color(color)
+
     try:
-        rect = pygame.draw.rect(surface= window,
-                                color= color_tuple,
-                                width= width,
-                                rect= rect_values)
+        rect = pygame.draw.rect(window,color,(coordinate[0], coordinate[1], size[0], size[1]),width,border_radios)
         return rect
     except:
         print("Parametros inválidos"
@@ -87,7 +84,8 @@ def draw_rect(window:pygame.Surface,
         rect = pygame.draw.rect(surface=surface,
                                 color=(255,255,255),
                                 rect=(100,100,50,50),
-                                width=1)
+                                width=1,
+                                border_radius= border_radios)
         return rect
     
 def get_image(scale:Union[List[int],Tuple[int,int]],
@@ -133,11 +131,14 @@ def insert_text(text:str,
     Returns:
         pygame.Surface: retona um texto surface
     """
-    fonte = pygame.font.Font(None, size)
-    text_blit = fonte.render(text,True, color)
-    if window is not None:
-        window.blit(text_blit,coordinate)
-    return text_blit
+    try:
+        fonte = pygame.font.Font(None, size)
+        text_blit = fonte.render(text,True, color)
+        if window is not None:
+            window.blit(text_blit,coordinate)
+        return text_blit
+    except:
+        return text
 
 def get_center_window(window_size:Union[List[int],Tuple[int, int]],
             object_size:Union[List[int],Tuple[int, int]],

@@ -2,9 +2,9 @@ import pygame
 from sys import exit
 
 
-from tools import get_color, insert_text, get_mid
+from basico.tools import get_color, insert_text, get_mid
 from typing import Union, List, Tuple
-from button import Button
+from basico.button import Button
 pygame.init()
 class Input:
     def __init__(self,
@@ -97,8 +97,8 @@ class Input:
         if self.tag == "text":
             self.key_return = ''
             self.update()
-import window
-from tools import allight_itens
+import basico.window as window
+from basico.tools import allight_itens
 janela = window.Window((600,600), "white").pack()
 butteste = Input(janela,"input", [200,100], (0,0), "red", "images/gato.webp", 50, "black",1)
 butteste2 = Input(janela,"input", [200,100], (0,0), "red", "images/gato.webp", 50, "black",1)
