@@ -198,5 +198,10 @@ def allight_itens(list_itens:list,
         for iten in list_itens:
             iten.coordinate = [start_coordinates[0],start_coordinates[1]]
             start_coordinates[0] += iten.size[0]+space
-            print(iten.coordinate)
+            
     
+    if tag == "y":
+        for iten in list_itens:
+            iten.coordinate = [start_coordinates[0],start_coordinates[1]]
+            start_coordinates[1] += iten.size[1]+space
+            print(iten.coordinate)

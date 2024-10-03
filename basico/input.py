@@ -97,23 +97,3 @@ class Input:
         if self.tag == "text":
             self.key_return = ''
             self.update()
-import basico.window as window
-from basico.tools import allight_itens
-janela = window.Window((600,600), "white").pack()
-butteste = Input(janela,"input", [200,100], (0,0), "red", "images/gato.webp", 50, "black",1)
-butteste2 = Input(janela,"input", [200,100], (0,0), "red", "images/gato.webp", 50, "black",1)
-allight_itens([butteste,butteste2],[0,0])
-inp = [butteste,butteste2]
-for a in inp:
-    print(a.coordinate)
-    a.pack()
-while True:
-    for events in pygame.event.get():
-        if events.type == pygame.QUIT:
-            pygame.quit()
-        if events.type == pygame.MOUSEBUTTONDOWN:
-            pos = pygame.mouse.get_pos()
-            for b in inp:
-                b.run(pos)
-        
-    pygame.display.flip()

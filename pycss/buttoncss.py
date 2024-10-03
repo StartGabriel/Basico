@@ -58,7 +58,8 @@ class ButtonCss:
     def color_press(self,buttons:List[Button], color:str = "white"):
         color = get_color(color)
         for but in buttons:
-            color_backup = but.color
+            print(but.color)
+            color_backup = get_color(but.color)
             if but.clicked == 1:
                 but.color = color
                 but.pack()
