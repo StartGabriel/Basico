@@ -60,10 +60,13 @@ class ButtonCss:
         for but in buttons:
             print(but.color)
             color_backup = get_color(but.color)
-            if but.clicked == 1:
+            if but.clicked == -1:
+                print("troca")
                 but.color = color
                 but.pack()
                 but.color = color_backup
-            if but.clicked == -1:
+            if but.clicked == 1:
+                print("troca -1")
                 but.color = color_backup
                 but.pack()
+            pygame.display.flip()

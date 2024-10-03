@@ -49,9 +49,10 @@ class Input:
     
     def run(self,pos):
         self.but_input.run(pos=pos)
+        print(self.key_return)
+        return self.key_return
     
     def get_text(self):
-        print("gerando input")
         self.loop = True
         self.key_return = ''
         while self.loop:

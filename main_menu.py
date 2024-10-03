@@ -17,6 +17,7 @@ def menu():
     return janela
 
 janela = menu()
+
 def _menu(window:pygame.Surface=janela):
     janela_backup = window.copy()
     but_cadastrar = Button(window=janela,
@@ -43,7 +44,7 @@ def _menu(window:pygame.Surface=janela):
                       coordinate=[10,10],
                       title="MENU",
                       title_size=30,
-                      tile_color= "white",
+                      tile_color= "black",
                       border_radios= 100,
                       command= revert)
     buts = [but_cadastrar, but_vender]
@@ -59,7 +60,6 @@ def _menu(window:pygame.Surface=janela):
                size=5,
                visibility=50)
     
-    
     loop_menu = True
     
     while loop_menu:
@@ -72,19 +72,36 @@ def _menu(window:pygame.Surface=janela):
                 for but in buts:
                     but.run(pos=pos)
                     but_menu.run(pos=pos)
-                    if but_menu.clicked == -1:
+                    if but_menu.clicked == 1:
                         janela.blit(janela_backup,(0,0))
                         loop_menu = False
 
                     
         pygame.display.flip()
 def revert():
+    #apenas para update do botão menu dentro da função _menu
     pass                
 def _cadastrar():
-    print("teste cadastro")
-    
-
-
+    janela_backup = janela.copy()
+    inp_nome = Input(window=janela,
+                     title="NOME DO PRODUTO",
+                     size=[600,50],
+                     coordinate=[350,10],
+                     color="light_gray",
+                     tag="all")
+    inp_nome.pack()
+    loop_inp = True
+    while loop_inp:
+        for events in pygame.event.get():
+            if events.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if events.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                nome_produto= inp_nome.run(pos=pos)
+                if type(nome_produto) == str:
+                    loop_inp = False
+        pygame.display.flip()
 but_menu = Button(window=janela,
                       size=[300,50],
                       color="dark",

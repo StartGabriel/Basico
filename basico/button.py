@@ -55,7 +55,6 @@ class Button:
         self.verify = self.rect.collidepoint(pos)
         if self.verify == True:
             self.clicked = self.clicked *-1
-            print(self.clicked)
             self.command()
     def insert_background(self):
         from basico.tools import get_image
