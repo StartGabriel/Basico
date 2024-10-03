@@ -82,6 +82,7 @@ def revert():
     #apenas para update do botão menu dentro da função _menu
     pass                
 def _cadastrar():
+    inp_return = []
     janela_backup = janela.copy()
     inp_nome = Input(window=janela,
                      title="NOME DO PRODUTO",
@@ -89,7 +90,27 @@ def _cadastrar():
                      coordinate=[350,10],
                      color="light_gray",
                      tag="all")
-    inp_nome.pack()
+    inp_marca = Input(window=janela,
+                     title= "MARCA DO PRODUTO",
+                     size=[295,50],
+                     coordinate=[350,70],
+                     color="light_gray",
+                     tag="all")
+    inp_codigo = Input(window=janela,
+                     title="CODIGO DE BARRAS",
+                     size=[295,50],
+                     coordinate=[655,70],
+                     color="light_gray",
+                     tag="all")
+    inp_qtd = Input(window=janela,
+                     title="QUANTIDADE",
+                     size=[150,50],
+                     coordinate=[350,130],
+                     color="light_gray",
+                     tag="all")
+    inps = [inp_nome,inp_marca,inp_codigo,inp_qtd]
+    for inp in inps:
+        inp.pack()
     loop_inp = True
     while loop_inp:
         for events in pygame.event.get():
@@ -98,9 +119,10 @@ def _cadastrar():
                 sys.exit()
             if events.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                nome_produto= inp_nome.run(pos=pos)
-                if type(nome_produto) == str:
-                    loop_inp = False
+                for inp in inps:
+                    inp_return.append = inp.run(pos=pos)
+                    if type(inp) == str:
+                        loop_inp = False
         pygame.display.flip()
 but_menu = Button(window=janela,
                       size=[300,50],
