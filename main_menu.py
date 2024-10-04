@@ -80,35 +80,46 @@ def _menu(window:pygame.Surface=janela):
         pygame.display.flip()
 def revert():
     #apenas para update do botão menu dentro da função _menu
+    pass
+def enviar():
     pass                
 def _cadastrar():
-    inp_return = []
-    janela_backup = janela.copy()
+    inp_return = [0,1,2,3]
+    janela_backup_ = janela.copy()
     inp_nome = Input(window=janela,
                      title="NOME DO PRODUTO",
                      size=[600,50],
                      coordinate=[350,10],
                      color="light_gray",
-                     tag="all")
+                     tag="not")
     inp_marca = Input(window=janela,
                      title= "MARCA DO PRODUTO",
                      size=[295,50],
                      coordinate=[350,70],
                      color="light_gray",
-                     tag="all")
+                     tag="not")
     inp_codigo = Input(window=janela,
                      title="CODIGO DE BARRAS",
                      size=[295,50],
                      coordinate=[655,70],
                      color="light_gray",
-                     tag="all")
+                     tag="not")
     inp_qtd = Input(window=janela,
                      title="QUANTIDADE",
                      size=[150,50],
                      coordinate=[350,130],
                      color="light_gray",
-                     tag="all")
+                     tag="not")
+    but_enviar = Button(window=janela,
+                        title="ENVIAR",
+                        size=[200,50],
+                        coordinate=[665,130],
+                        color="green",
+                        command=enviar,
+                        border_radios=100)
+    
     inps = [inp_nome,inp_marca,inp_codigo,inp_qtd]
+    css.shadow(buttons=[but_enviar],size=5,visibility=50)
     for inp in inps:
         inp.pack()
     loop_inp = True
@@ -119,11 +130,21 @@ def _cadastrar():
                 sys.exit()
             if events.type == pygame.MOUSEBUTTONDOWN:
                 pos = pygame.mouse.get_pos()
-                for inp in inps:
-                    inp_return.append = inp.run(pos=pos)
-                    if type(inp) == str:
-                        loop_inp = False
+                but_enviar.run(pos=pos)
+                for index,inp in enumerate(inps):
+                    verify = inp.run(pos=pos)
+                    if verify is not None:
+                        print(index)
+                        inp_return[index]=(verify)
+                        inp.pack()
+                    
+                if but_enviar.clicked == 1:
+                    print("false")
+                    but_enviar.clicked = -1
+                    janela.blit(janela_backup_,(0,0))
+                    loop_inp = False
         pygame.display.flip()
+    print(inp_return)
 but_menu = Button(window=janela,
                       size=[300,50],
                       color="dark",

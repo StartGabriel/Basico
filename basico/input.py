@@ -48,13 +48,15 @@ class Input:
         self.size_title_blit = self.but_input.title_size_blit
     
     def run(self,pos):
-        self.but_input.run(pos=pos)
-        print(self.key_return)
-        return self.key_return
+        self.retorned= self.but_input.run(pos=pos)
+        return self.retorned
+
     
     def get_text(self):
         self.loop = True
         self.key_return = ''
+        self.title = ''
+        self.pack()
         while self.loop:
             for events in pygame.event.get():
                 if events.type == pygame.QUIT:
@@ -73,15 +75,16 @@ class Input:
                     
                     if events.key == pygame.K_RETURN:
                         self.clear()
-                        print(self.key_return)
                         return self.key_return
                     if self.size_validation [0]>= self.size[0]:
                         self.k_backspace()
+            pygame.display.flip()
                         
     def update(self):
+        self.title = ''
+        self.pack()
         self.text_blit = insert_text(self.key_return,self.text_color,self.title_size)
         self.size_validation = self.text_blit.get_size()
-        self.window.blit(self.window_backup_pack,(0,0))
         self.text_blit_coordinate = get_mid(object_size=self.size,
                                             object_size_target=self.size_title_blit,
                                             coordinate_object=self.coordinate)
@@ -98,3 +101,6 @@ class Input:
         if self.tag == "text":
             self.key_return = ''
             self.update()
+        if self.tag == "not":
+            self.title = self.key_return
+            self.pack()
