@@ -46,7 +46,7 @@ class Input:
         self.but_input.title = self.title
         self.but_input.pack()
         self.size_title_blit = self.but_input.title_size_blit
-    
+      
     def run(self,pos):
         self.retorned= self.but_input.run(pos=pos)
         return self.retorned
@@ -76,6 +76,7 @@ class Input:
                     if events.key == pygame.K_RETURN:
                         self.clear()
                         return self.key_return
+                        
                     if self.size_validation [0]>= self.size[0]:
                         self.k_backspace()
             pygame.display.flip()
@@ -88,7 +89,8 @@ class Input:
         self.text_blit_coordinate = get_mid(object_size=self.size,
                                             object_size_target=self.size_title_blit,
                                             coordinate_object=self.coordinate)
-        self.window.blit(self.text_blit,(self.coordinate[0],self.text_blit_coordinate[1]))               
+        self.title = self.key_return
+        self.pack()               
         pygame.display.flip()
         
     def k_backspace(self):
@@ -104,3 +106,6 @@ class Input:
         if self.tag == "not":
             self.title = self.key_return
             self.pack()
+    
+    def get_but(self):
+        return self.but_input

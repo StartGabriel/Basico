@@ -134,7 +134,7 @@ def insert_text(text:str,
         pygame.Surface: retona um texto surface
     """
     try:
-        fonte = pygame.font.Font(None, size)
+        fonte = pygame.font.SysFont('arial',size)
         text_blit = fonte.render(text,True, color)
         if window is not None:
             window.blit(text_blit,coordinate)

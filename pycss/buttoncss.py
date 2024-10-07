@@ -1,6 +1,7 @@
 from typing import Union, List
 from basico.button import Button
-from basico.tools import get_color 
+from basico.tools import get_color
+from basico.input import Input
 import pygame
 pygame.init()
 class ButtonCss:
