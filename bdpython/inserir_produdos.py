@@ -43,3 +43,22 @@ def inserir(conn:sqlite3.Connection,
     """
     conn.execute(sql, (codigo, nome, marca, quantidade))
     conn.commit()
+
+def consultar_produto(conn:sqlite3.Connection, codigo:int = None, nome: str = None):
+    """Consulta as advertencias do usuario
+
+    Args:
+        conn (sqlite3.Connection): Conexão com banco
+        user_id (int): id do usuario
+
+    Returns:
+        list: retorna uma lista com o numero da advertencia, id do user, e motivo da advertencia
+    """
+    if codigo:
+        sql = "SELECT * FROM produtos WHERE codigo = ?;"
+        cursor = conn.execute(sql, (codigo,))
+        return cursor.fetchall()
+    if nome:
+        sql = "SELECT * FROM prostos WHERE nome = ?;"
+        cursor = conn.execute(sql, (nome,))
+        return cursor.fetchall()

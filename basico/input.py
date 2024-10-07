@@ -63,7 +63,12 @@ class Input:
                     self.loop = False
                     pygame.quit()
                     exit()
-
+                if events.type == pygame.MOUSEBUTTONDOWN:
+                    self.pos_verify = pygame.mouse.get_pos()
+                    self.pos_verify_click= self.but_input.rect.collidepoint(self.pos_verify)
+                    if self.pos_verify_click == False:
+                        self.clear()
+                        return self.key_return
                 if events.type == pygame.KEYDOWN:
                     self.key_pressed = pygame.key.get_pressed()
                     if events.unicode.isprintable():

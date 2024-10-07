@@ -6,7 +6,7 @@ from typing import Union,List
 
 from basico.button import Button
 from basico.input import Input
-from basico.tools import get_color, allight_itens
+from basico.tools import get_color, allight_itens, insert_text
 from basico.window import Window
 from pycss.buttoncss import ButtonCss
 class Main:
@@ -63,7 +63,7 @@ class Main:
                         title_size= self.button_title_size,
                         tile_color= self.button_title_color,
                         border_radios= self.button_border_radius,
-                        command= self.cadastrar)
+                        command= self.vender)
         self.but_menu = Button(window= self.janela,
                         size= self.button_size,
                         color= self.button_menu_color,
@@ -182,10 +182,66 @@ class Main:
                         self.main_loop_inputs = False
             pygame.display.flip()
         self.inserir()
+    def vender(self):
+        self.janela_backup__ = self.janela.copy()
+        self.inp_pesquisar = Input(window=self.janela,
+                        title="NOME DO PRODUTO",
+                        size=[600,50],
+                        coordinate=[350,10],
+                        color=self.input_color,
+                        title_size= self.input_title_size,
+                        text_color= self.input_title_color,
+                        tag="not")
+        self.but_finalizar = Button(window= self.janela,
+                                size=[200,50],
+                                color="green",
+                                coordinate=[750,500],
+                                title="FINALIZAR",
+                                title_size=30,
+                                command=self.revert)
+        self.but_cancelar = Button(window= self.janela,
+                                size=[200,50],
+                                color="red",
+                                coordinate=[350,500],
+                                title="CANCELAR",
+                                title_size=30,
+                                command=self.revert)
+        self.inp_pesquisar.pack()
+        self.buttons = [self.but_finalizar,self.but_cancelar]
+        self.modificadores.border([self.inp_pesquisar],color="black")
+        self.modificadores.shadow(self.buttons,5,"black",100)
 
+        self.main_loop_vender = True
+        while self.main_loop_vender:
+            for events in pygame.event.get():
+                if events.type == pygame.QUIT:
+                    pygame.quit()
+                    self.main_loop_vender = False
+                if events.type == pygame.MOUSEBUTTONDOWN:
+                    self.pos = pygame.mouse.get_pos()
+                    self.verify = self.inp_pesquisar.run(self.pos)
+                    if self.verify is not None:
+                        self.pesquisar = self.verify
+                        self.consultar()
+
+                        
+                if self.but_finalizar.clicked == 1:
+                    self.but_enviar.clicked = -1
+                    self.janela.blit(self.janela_backup_,(0,0))
+                    self.main_loop_inputs = False
+
+
+            pygame.display.flip()
     def revert(self):
         #apenas para update do botão menu dentro da função _menu
         pass 
+    def consultar(self):
+        from bdpython.inserir_produdos import conectar, consultar_produto
+        self.cnn = conectar("bdpython/produtos.db")
+        self.produto =consultar_produto(self.cnn, self.pesquisar)
+        self.produto_blit = insert_text()
+        print(self.produto)
+
     def inserir(self):
         from bdpython.inserir_produdos import conectar,criar_tabela, inserir
         self.cnn = conectar("bdpython/produtos.db")
