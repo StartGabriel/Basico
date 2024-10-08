@@ -5,6 +5,7 @@ from sys import exit
 from basico.tools import get_color, insert_text, get_mid
 from typing import Union, List, Tuple
 from basico.button import Button
+
 pygame.init()
 class Input:
     def __init__(self,
@@ -29,7 +30,10 @@ class Input:
         self.width = width
         self.tag = tag
         self.window_backup = window.copy()
-
+        self.color_clicked = "green"
+        self.border = True
+        self.border_color = "black"
+        self.first = True
     def pack(self):
         self.but_input = Button(window= self.window,
                                 size= self.size,
@@ -46,7 +50,6 @@ class Input:
         self.but_input.title = self.title
         self.but_input.pack()
         self.size_title_blit = self.but_input.title_size_blit
-      
     def run(self,pos):
         self.retorned= self.but_input.run(pos=pos)
         return self.retorned
@@ -58,6 +61,7 @@ class Input:
         self.title = ''
         self.pack()
         while self.loop:
+            self.first_click()
             for events in pygame.event.get():
                 if events.type == pygame.QUIT:
                     self.loop = False
@@ -66,9 +70,11 @@ class Input:
                 if events.type == pygame.MOUSEBUTTONDOWN:
                     self.pos_verify = pygame.mouse.get_pos()
                     self.pos_verify_click= self.but_input.rect.collidepoint(self.pos_verify)
+                    
                     if self.pos_verify_click == False:
                         self.clear()
                         return self.key_return
+                    
                 if events.type == pygame.KEYDOWN:
                     self.key_pressed = pygame.key.get_pressed()
                     if events.unicode.isprintable():
@@ -85,9 +91,18 @@ class Input:
                     if self.size_validation [0]>= self.size[0]:
                         self.k_backspace()
             pygame.display.flip()
+
+    def first_click(self):
+        if self.first == True:
+            from pycss.buttoncss import ButtonCss
+            self.mod = ButtonCss()
+            self.mod.border([self.but_input],2,self.color_clicked)
+        self.first = False
+
                         
     def update(self):
         self.title = ''
+        self.border_color = self.color_clicked
         self.pack()
         self.text_blit = insert_text(self.key_return,self.text_color,self.title_size)
         self.size_validation = self.text_blit.get_size()
@@ -95,7 +110,7 @@ class Input:
                                             object_size_target=self.size_title_blit,
                                             coordinate_object=self.coordinate)
         self.title = self.key_return
-        self.pack()               
+        self.pack()  
         pygame.display.flip()
         
     def k_backspace(self):
@@ -111,6 +126,7 @@ class Input:
         if self.tag == "not":
             self.title = self.key_return
             self.pack()
+            self.first = True
     
     def get_but(self):
         return self.but_input

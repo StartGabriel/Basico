@@ -48,6 +48,8 @@ class ButtonCss:
             but.size[0] += width
             but.size[1] += width
             but.color = color
+            but.coordinate[0] -= width/2
+            but.coordinate[1] -= width/2
             but.pack()
             but.size[0] -= width
             but.size[1] -= width

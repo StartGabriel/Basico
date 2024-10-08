@@ -38,10 +38,12 @@ class Main:
         self.button_menu_title_color = get_color("black")
         self.button_menu_pos = [10,10]
         self.start_coordinates = [10,70]
-        self.inp_return = [0,1,2,3]
         self.input_color = "dark_gray"
         self.input_title_size = 20
         self.input_title_color = "black"
+        self.inp_return = []
+        self.produto_blit = []
+        self.soma = []
         
     def menu(self):
         self.__set_defauth_values()
@@ -141,23 +143,31 @@ class Main:
                         title_size=self.input_title_size,
                         text_color= self.input_color,
                         tag="not")
+        self.inp_preco = Input(window=self.janela,
+                        title="PREÇO",
+                        size=[150,50],
+                        coordinate=[510,130],
+                        color=self.input_color,
+                        title_size=self.input_title_size,
+                        text_color= self.input_color,
+                        tag="not")
         self.but_enviar = Button(window=self.janela,
                             title="ENVIAR",
                             size=[200,50],
-                            coordinate=[510,130],
+                            coordinate=[350,190],
                             title_size=30,
                             color="green",
                             command=self.revert,
                             border_radios=100)
-        
         self.inputs = [self.inp_nome,
                      self.inp_marca,
                      self.inp_codigo,
-                     self.inp_qtd]
-        
+                     self.inp_qtd,
+                     self.inp_preco]
         self.modificadores.shadow(buttons=[self.but_enviar],size=5,visibility=50)
         self.get_inp_but = []
-        for inp in self.inputs:
+        for index, inp in enumerate(self.inputs):
+            self.inp_return.append(index)
             inp.pack()
             self.get_inp_but.append(inp.get_but())
         self.modificadores.border(buttons=self.get_inp_but,color="black")
@@ -181,7 +191,13 @@ class Main:
                         self.janela.blit(self.janela_backup_,(0,0))
                         self.main_loop_inputs = False
             pygame.display.flip()
+        self.tratar()
         self.inserir()
+    def tratar(self):
+        self.inp_return[2] = int(self.inp_return[2])
+        self.inp_return[3] = int(self.inp_return[3])
+        self.inp_return[4] = str(self.inp_return[4]).replace(',','.')
+        self.inp_return[4] = float(self.inp_return[4])
     def vender(self):
         self.janela_backup__ = self.janela.copy()
         self.inp_pesquisar = Input(window=self.janela,
@@ -193,23 +209,24 @@ class Main:
                         text_color= self.input_title_color,
                         tag="not")
         self.but_finalizar = Button(window= self.janela,
-                                size=[200,50],
+                                size=[100,50],
                                 color="green",
-                                coordinate=[750,500],
+                                coordinate=[870,500],
                                 title="FINALIZAR",
-                                title_size=30,
+                                title_size=10,
                                 command=self.revert)
         self.but_cancelar = Button(window= self.janela,
-                                size=[200,50],
+                                size=[100,50],
                                 color="red",
                                 coordinate=[350,500],
                                 title="CANCELAR",
-                                title_size=30,
+                                title_size=10,
                                 command=self.revert)
         self.inp_pesquisar.pack()
         self.buttons = [self.but_finalizar,self.but_cancelar]
         self.modificadores.border([self.inp_pesquisar],color="black")
         self.modificadores.shadow(self.buttons,5,"black",100)
+        self.janela_backup_vender = self.janela.copy()
 
         self.main_loop_vender = True
         while self.main_loop_vender:
@@ -223,6 +240,9 @@ class Main:
                     if self.verify is not None:
                         self.pesquisar = self.verify
                         self.consultar()
+                if events.type == pygame.MOUSEWHEEL:
+                    self.janela_backup_vender_update = self.janela_backup_vender.copy()
+                    self.board.run(event=events)
 
                         
                 if self.but_finalizar.clicked == 1:
@@ -237,16 +257,29 @@ class Main:
         pass 
     def consultar(self):
         from bdpython.inserir_produdos import conectar, consultar_produto
+        from basico.list import List
+        self.janela.blit(self.janela_backup_vender,(0,0))
         self.cnn = conectar("bdpython/produtos.db")
         self.produto =consultar_produto(self.cnn, self.pesquisar)
-        self.produto_blit = insert_text()
         print(self.produto)
-
+        self.soma.append(self.produto[0][5])
+        self.produto_blit.append(self.produto[0][1])
+        self.board = List(window=self.janela,
+                          list_itens=self.produto_blit,
+                          color="white",
+                          title_size=20,
+                          coordinate=[350,70],
+                          bord_size=[500,400])
+        pygame.display.flip()
+        self.janela.blit(self.janela_backup_vender,(0,0))
+        insert_text(f"R$: {str(sum(self.soma))}","black",45,self.janela,[570,500])
+        self.board.pack()
     def inserir(self):
         from bdpython.inserir_produdos import conectar,criar_tabela, inserir
         self.cnn = conectar("bdpython/produtos.db")
         criar_tabela(self.cnn)
-        inserir(self.cnn, self.inp_return[2],self.inp_return[0], self.inp_return[1], self.inp_return[3])         
+        inserir(self.cnn, self.inp_return[0],self.inp_return[1], self.inp_return[2], self.inp_return[3],self.inp_return[4])
+        self.menu()       
 a = Main()
 def _menu():
     a.menu()

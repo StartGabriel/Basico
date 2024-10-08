@@ -21,27 +21,29 @@ def criar_tabela(cnn:sqlite3.Connection):
     sql = """
     CREATE TABLE IF NOT EXISTS produtos (
         nr INTEGER PRIMARY KEY AUTOINCREMENT,
-        codigo INTEGER NOT NULL,
         nome TEXT NOT NULL,
         marca TEXT NOT NULL,
-        quantidade INTEGER NOT NULL
+        codigo INTEGER NOT NULL,
+        quantidade INTEGER NOT NULL,
+        preco REAL NOT NULL
     );
     """
     cnn.execute(sql)
     cnn.commit()
 
 def inserir(conn:sqlite3.Connection,
-                        codigo:int,
                         nome:str,
                         marca:str,
-                        quantidade:int):
+                        codigo:int,
+                        quantidade:int,
+                        preco:float):
  
     
     sql = """
-    INSERT INTO produtos (codigo, nome, marca, quantidade)
-    VALUES (?, ?, ?, ?);
+    INSERT INTO produtos (nome, marca, codigo, quantidade, preco)
+    VALUES (?, ?, ?, ?,?);
     """
-    conn.execute(sql, (codigo, nome, marca, quantidade))
+    conn.execute(sql, (nome, marca, codigo, quantidade, preco))
     conn.commit()
 
 def consultar_produto(conn:sqlite3.Connection, codigo:int = None, nome: str = None):
@@ -59,6 +61,6 @@ def consultar_produto(conn:sqlite3.Connection, codigo:int = None, nome: str = No
         cursor = conn.execute(sql, (codigo,))
         return cursor.fetchall()
     if nome:
-        sql = "SELECT * FROM prostos WHERE nome = ?;"
+        sql = "SELECT * FROM produtos WHERE nome = ?;"
         cursor = conn.execute(sql, (nome,))
         return cursor.fetchall()
