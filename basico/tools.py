@@ -119,6 +119,7 @@ def get_image(scale:Union[List[int],Tuple[int,int]],
 def insert_text(text:str,
                 color: str,
                 size: int,
+                background_color: str = None,
                 window: pygame.Surface = None,
                 coordinate:Union[List[int],Tuple[int,int]] = None):
     """Insere um texto ou cria um texto surface
@@ -134,9 +135,13 @@ def insert_text(text:str,
         pygame.Surface: retona um texto surface
     """
     try:
+
         fonte = pygame.font.SysFont('arial',size)
         text_blit = fonte.render(text,True, color)
         if window is not None:
+            if background_color:
+                text_size = text_blit.get_size()
+                draw_rect(window=window, size= text_size, coordinate= coordinate, color= background_color, width= 1)
             window.blit(text_blit,coordinate)
         return text_blit
     except:
@@ -184,9 +189,9 @@ def get_mid(object_size:Union[List[int],Tuple[int, int]],
     center_x = coordinate_object[0]+object_size[0]/2-object_size_target[0]/2
     center_y = coordinate_object[1]+object_size[1]/2-object_size_target[1]/2
     if tag == "x":
-        return center_x
+        return [center_x, coordinate_object[1]]
     if tag == "y":
-        return center_x
+        return [coordinate_object[1], center_y]
     else:
         return [center_x, center_y]
 
@@ -205,3 +210,14 @@ def allight_itens(list_itens:list,
             iten.coordinate = [start_coordinates[0],start_coordinates[1]]
             start_coordinates[1] += iten.size[1]+space
             print(iten.coordinate)
+
+def collidepoint(coordenada:list,
+                 size:list,
+                 pos:list,
+                 coordenada_obj:list = None):
+    if coordenada_obj:
+        coordenada = [coordenada[0] + coordenada_obj[0], coordenada[1]+coordenada_obj[1]]
+    if pos[0] >= coordenada[0] and pos[0] <= coordenada[0] + size[0] and pos[1] >= coordenada[1] and pos[1] <= coordenada[1] + size[1]:
+            return True
+    else:
+        return False

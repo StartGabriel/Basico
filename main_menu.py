@@ -262,6 +262,7 @@ class Main:
         self.cnn = conectar("bdpython/produtos.db")
         self.produto =consultar_produto(self.cnn, self.pesquisar)
         print(self.produto)
+        #lembrar de colocar tratamento de erro
         self.soma.append(self.produto[0][5])
         self.produto_blit.append(self.produto[0][1])
         self.board = List(window=self.janela,

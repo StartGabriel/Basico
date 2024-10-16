@@ -5,6 +5,7 @@ from sys import exit
 from basico.tools import get_color, insert_text, get_mid
 from typing import Union, List, Tuple
 from basico.button import Button
+from pycss.buttoncss import Shadow
 
 pygame.init()
 class Input:
@@ -18,6 +19,9 @@ class Input:
                  title_size:int = 30,
                  text_color:str = "black",
                  width:int = 50,
+                 border_color:str = "black",
+                 border_color_clicked:str = "green",
+                 shadow:Shadow = None,
                  tag:str = "text"):
         self.window = window
         self.size = size
@@ -25,16 +29,22 @@ class Input:
         self.color = get_color(color)
         self.background = background
         self.title = title
+        self.title_backup = title
         self.title_size= title_size
         self.text_color = get_color(text_color)
         self.width = width
         self.tag = tag
         self.window_backup = window.copy()
-        self.color_clicked = "green"
+        self.color_clicked = border_color_clicked
         self.border = True
-        self.border_color = "black"
+        self.border_color = border_color
+        self.border_color_backup = self.border_color
+        self.shadow = shadow
         self.first = True
+
     def pack(self):
+        from pycss.buttoncss import ButtonCss, Shadow
+        self.mod = ButtonCss()
         self.but_input = Button(window= self.window,
                                 size= self.size,
                                 color= self.color,
@@ -44,8 +54,11 @@ class Input:
                                 background= self.background,
                                 width=self.width,
                                 command=self.get_text)
-        
+        if self.shadow is not None:
+            self.shadow.pack(self.but_input)
+            self.shadow.visibility = 0
         self.but_input.pack()
+        self.mod.border([self.but_input],2,self.border_color)
         self.window_backup_pack = self.window.copy()
         self.but_input.title = self.title
         self.but_input.pack()
@@ -124,9 +137,24 @@ class Input:
             self.key_return = ''
             self.update()
         if self.tag == "not":
-            self.title = self.key_return
-            self.pack()
-            self.first = True
+            self.border_color = self.border_color_backup
+            if self.title != '':
+                self.title = self.key_return
+                print(self.border_color_backup)
+                from pycss.buttoncss import ButtonCss
+                self.mod = ButtonCss()
+                self.mod.border([self.but_input],2,self.border_color_backup)
+                self.pack()
+                self.first = True
+            else:
+                self.title = self.title_backup
+                print(self.border_color_backup)
+                from pycss.buttoncss import ButtonCss
+                self.mod = ButtonCss()
+                self.mod.border([self.but_input],2,self.border_color_backup)
+                self.pack()
+                self.first = True
+
     
     def get_but(self):
         return self.but_input

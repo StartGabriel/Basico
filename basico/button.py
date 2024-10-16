@@ -2,7 +2,7 @@ import pygame
 
 from typing import Union, List, Tuple
 pygame.init()
-from basico.tools import get_color, draw_rect, insert_text, get_mid
+from basico.tools import get_color, draw_rect, insert_text, get_mid, collidepoint
 
 class Button:
     def __init__(self,
@@ -17,7 +17,8 @@ class Button:
                  width = 0, #Não mecha caso use o self border radios
                  border_radios= -1,
                  command:callable = None,
-                 tags:callable = None):
+                 tags:callable = None,
+                 subwindow = None):
         
         self.clicked = -1
         self.window = window
@@ -32,7 +33,10 @@ class Button:
         self.tags = tags
         self.width = width 
         self.border_radios = border_radios
+        self.subwindow = None
+        #self.title_coordinate = None
     def pack(self):
+        
         self.color = get_color(self.color)
 
         self.rect = draw_rect(self.window,self.size,self.coordinate, self.color, self.width, self.border_radios)
@@ -41,6 +45,7 @@ class Button:
                                  color=self.title_color,
                                  size=self.title_size)
         self.title_size_blit = self.title.get_size()
+        #if self.title_coordinate is None:
         self.title_coordinate = get_mid(object_size=self.size,
                                         object_size_target=self.title_size_blit,
                                         coordinate_object=self.coordinate)
@@ -52,10 +57,16 @@ class Button:
         return self
     def run(self,
             pos:Union[List[int],Tuple[int, int]]):
-        self.verify = self.rect.collidepoint(pos)
-        if self.verify == True:
-            self.clicked = self.clicked *-1
-            return self.command()
+        if self.subwindow:
+            self.verify = collidepoint(self.coordinate, self.size, pos, self.subwindow)
+            if self.verify == True:
+                self.clicked = self.clicked*-1
+                return self.command()
+        else:
+            self.verify = collidepoint(self.coordinate, self.size, pos)
+            if self.verify == True:
+                self.clicked = self.clicked *-1
+                return self.command()
     def insert_background(self):
         from basico.tools import get_image
         get_image(window= self.window,

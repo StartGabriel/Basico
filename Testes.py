@@ -12,6 +12,5 @@ teste.pack()
 
 while True:
     for events in pygame.event.get():
-        if events.type == pygame.MOUSEWHEEL:
-            teste.run(events)
+        teste.run(events)
     pygame.display.flip()

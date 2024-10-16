@@ -1,7 +1,7 @@
 from typing import Union, List
 from basico.button import Button
 from basico.tools import get_color
-from basico.input import Input
+
 import pygame
 pygame.init()
 class ButtonCss:
@@ -73,3 +73,22 @@ class ButtonCss:
                 but.color = color_backup
                 but.pack()
             pygame.display.flip()
+
+class Shadow:
+    def __init__(self,
+                 size:int,
+                 color:str,
+                 orientation:List[int] = [1,1],
+                 visibility:int = 100):
+        self.size = size
+        self.color = get_color(color)
+        self.orientation = orientation
+        self.visibility = visibility
+    
+    def pack(self, button):
+        self.mod = ButtonCss()
+        self.mod.shadow(buttons= [button],
+                        size= self.size,
+                        color_of_shadow= self.color,
+                        visibility= self.visibility,
+                        orientation= self.orientation)
