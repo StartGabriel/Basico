@@ -106,12 +106,17 @@ class TelaVender:
                 if events.type == pygame.QUIT:
                     pygame.quit()
                 if events.type == pygame.MOUSEBUTTONDOWN:
+                    if self.list_blit:
+                        if True in self.list_blit.iten_verify:
+                            print("entrou aqui nessa budega")
+                            self.inserir_valor()
                     self.pos = pygame.mouse.get_pos()
                     self.pesquisa = self.input_button.run(pos=self.pos)
                     self.imprimir_copy = self.window_backup.copy()
                     self.imprimir()
                 if self.list_blit:
                     self.list_blit.run(events)
+                  
                     
                     
                     
@@ -133,33 +138,41 @@ class TelaVender:
                                         bord_size=[500,500],
                                         tag="close")
                     
-                    self.list_blit.pack()
                     self.inserir_valor()
+                    self.update()
+                    self.list_blit.pack()
                     pygame.display.flip()
+                    self.inserir_copy = self.window.copy()
                 except:
                     self.window.blit(self.window_error,(0,0))
         except:
             print("produto nao localizado")
     def inserir_valor(self):
-        if self.list_blit:
-            self.valor = []
-            for valor in self.list_blit.list_itens:
-                from bdpython.inserir_produdos import conectar,consultar_produto
-                self.cnn = conectar("bdpython/produtos.db")
-                self.valores = (consultar_produto(conn=self.cnn, nome=valor))
-                self.valor.append(self.valores[0][5])
-            self.valor_imprimir = sum(self.valor)
-            self.value= insert_text(text=f"R$: {self.valor_imprimir}",
-                            size=self.button_title_size*2,
-                            color= self.button_title_color)
-            
+        try:
+            if self.list_blit:
+                self.valor = []
+                for valor in self.list_blit.list_itens:
+                    from bdpython.inserir_produdos import conectar,consultar_produto
+                    self.cnn = conectar("bdpython/produtos.db")
+                    self.valores = (consultar_produto(conn=self.cnn, nome=valor))
+                    self.valor.append(self.valores[0][5])
+                    self.imprimir_valor()
+        except:
+             pass
+    def imprimir_valor(self):
+        self.valor_imprimir = sum(self.valor)
+        self.value= insert_text(text=f"R$: {self.valor_imprimir}",
+                        size=self.button_title_size*2,
+                        color= self.button_title_color)
+        
+        self.window_error = self.window.copy()
+        pygame.display.flip()
+    def update(self):
             self.window.blit(self.value,
                             (self.button_finalizar_coordinate[0],
                             self.button_finalizar_coordinate[1]+self.title_f_size[1]*3))
             self.window_error = self.window.copy()
             pygame.display.flip()
-        
-        
     def consultar(self, codigo):
         from bdpython.inserir_produdos import conectar,consultar_produto
         print("consulltar")

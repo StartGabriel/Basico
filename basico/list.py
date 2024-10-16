@@ -31,13 +31,15 @@ class List:
         self.tag = tag
         self.buttons:Button = []
         
+        
 
     def pack(self):
+        self.iten_verify= []
         self.coordinate_update = []
         self.list_itens_blit = []
         self.coordinate_blit = [0, 0]
         for texts in self.list_itens:
-            
+            self.iten_verify.append(False)
             self.text_blit = insert_text(text=texts,
                                          color=self.color,
                                          size=self.title_size,
@@ -74,9 +76,14 @@ class List:
         if event.type == pygame.MOUSEBUTTONDOWN:
             self.pos = pygame.mouse.get_pos()
             for index, but in enumerate(self.buttons):
-                self.clique = collidepoint(self.buttons[index].coordinate, [self.title_size,self.title_size], self.pos, self.coordinates)
-                if self.clique == True:
-                    self.excluirs(index)
+                try:
+                    self.clique = collidepoint(self.buttons[index].coordinate, [self.title_size,self.title_size], self.pos, self.coordinates)
+                    self.iten_verify[index] = self.clique
+                    if self.clique == True:
+                        print(self.iten_verify)
+                        self.excluirs(index)
+                except:
+                    pass
     def update_up(self):
 
         self.sub_window.fill(self.bord_color)  # Limpa o subdisplay
@@ -120,6 +127,7 @@ class List:
         try:
             del self.list_itens[index]
             del self.list_itens_blit[index]
+          
             pygame.display.flip()
             self.update()
         except:
