@@ -134,18 +134,19 @@ def insert_text(text:str,
     Returns:
         pygame.Surface: retona um texto surface
     """
+    
     try:
-
-        fonte = pygame.font.SysFont('arial',size)
-        text_blit = fonte.render(text,True, color)
+        fonte = pygame.font.SysFont('arial', size)
+        text_blit = fonte.render(text, True, color)
         if window is not None:
             if background_color:
                 text_size = text_blit.get_size()
-                draw_rect(window=window, size= text_size, coordinate= coordinate, color= background_color, width= 1)
-            window.blit(text_blit,coordinate)
+                draw_rect(window=window, size=text_size, coordinate=coordinate, color=background_color, width=1)
+            window.blit(text_blit, coordinate)
         return text_blit
     except:
         return text
+
 
 def get_center_window(window_size:Union[List[int],Tuple[int, int]],
             object_size:Union[List[int],Tuple[int, int]],

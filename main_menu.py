@@ -199,59 +199,10 @@ class Main:
         self.inp_return[4] = str(self.inp_return[4]).replace(',','.')
         self.inp_return[4] = float(self.inp_return[4])
     def vender(self):
-        self.janela_backup__ = self.janela.copy()
-        self.inp_pesquisar = Input(window=self.janela,
-                        title="NOME DO PRODUTO",
-                        size=[600,50],
-                        coordinate=[350,10],
-                        color=self.input_color,
-                        title_size= self.input_title_size,
-                        text_color= self.input_title_color,
-                        tag="not")
-        self.but_finalizar = Button(window= self.janela,
-                                size=[100,50],
-                                color="green",
-                                coordinate=[870,500],
-                                title="FINALIZAR",
-                                title_size=10,
-                                command=self.revert)
-        self.but_cancelar = Button(window= self.janela,
-                                size=[100,50],
-                                color="red",
-                                coordinate=[350,500],
-                                title="CANCELAR",
-                                title_size=10,
-                                command=self.revert)
-        self.inp_pesquisar.pack()
-        self.buttons = [self.but_finalizar,self.but_cancelar]
-        self.modificadores.border([self.inp_pesquisar],color="black")
-        self.modificadores.shadow(self.buttons,5,"black",100)
-        self.janela_backup_vender = self.janela.copy()
-
-        self.main_loop_vender = True
-        while self.main_loop_vender:
-            for events in pygame.event.get():
-                if events.type == pygame.QUIT:
-                    pygame.quit()
-                    self.main_loop_vender = False
-                if events.type == pygame.MOUSEBUTTONDOWN:
-                    self.pos = pygame.mouse.get_pos()
-                    self.verify = self.inp_pesquisar.run(self.pos)
-                    if self.verify is not None:
-                        self.pesquisar = self.verify
-                        self.consultar()
-                if events.type == pygame.MOUSEWHEEL:
-                    self.janela_backup_vender_update = self.janela_backup_vender.copy()
-                    self.board.run(event=events)
-
-                        
-                if self.but_finalizar.clicked == 1:
-                    self.but_enviar.clicked = -1
-                    self.janela.blit(self.janela_backup_,(0,0))
-                    self.main_loop_inputs = False
-
-
-            pygame.display.flip()
+        from venderTela import TelaVender
+        self.tela = TelaVender()
+        self.tela.pack()
+        self.tela.main_loop()
     def revert(self):
         #apenas para update do botão menu dentro da função _menu
         pass 

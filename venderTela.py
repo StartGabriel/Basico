@@ -22,8 +22,10 @@ class TelaVender:
         self.list_produtos = []
         self.list_blit = None
         self.valor = []
-        self.__buttons()
-        self.__input()
+        self.button_delete =  []
+        self.window_backup = self.window.copy()
+        self.button_title_finalizar_gambiarra = 'R$: 0'
+        
     def __buttons(self):
         self.button_size = [100,50]
         self.button_color = "dark_gray"
@@ -39,8 +41,8 @@ class TelaVender:
                                        size= self.button_size_f,
                                        color= self.button_color,
                                        coordinate= self.button_finalizar_coordinate,
-                                       title="",
-                                       title_size=self.button_title_size,
+                                       title=self.button_title_finalizar_gambiarra,
+                                       title_size=30,
                                        tile_color= self.button_title_color)
         
         self.title_f= insert_text(text="FINALIZAR",
@@ -69,6 +71,45 @@ class TelaVender:
                          color=(255,255,255),
                          start_pos=(self.button_finalizar_coordinate[0],self.button_finalizar_coordinate[1]+self.title_f_size[1]*2),
                          end_pos=(self.button_finalizar_coordinate[0]+self.button_size_f[0],self.button_finalizar_coordinate[1]+self.title_f_size[1]*2))
+    def pack(self):
+        self.window.blit(self.window_backup,(0,0))
+        self.__buttons()
+        self.__input()
+        self.__list_prod()
+        self.__delete_itens()
+        pygame.display.update()
+        
+    def __list_prod(self):
+        self.list_blit = List(window=self.window,
+                                        list_itens=self.list_produtos,
+                                        color="dark_gray",
+                                        title_size=20,
+                                        coordinate=[self.input_coordinate[0],self.input_size[1]+self.input_coordinate[1]],
+                                        bord_size=[500,500])
+        self.list_blit.pack()
+        
+    def __delete_itens(self,event = None):
+        self.button_delete =  []
+        self.button_delete_color = "light_gray"
+        self.button_delete_ = None
+        self.button_delete_title = "X"
+        self.button_delete_title_color = "red"
+        self.button_delete_title_size = 20
+        self.button_delete_size = [20,20]
+        for index, but in enumerate(self.list_blit.list_itens):
+            self.button_delete.append(Button(window=self.window,
+                                             size=self.button_delete_size,
+                                             color=self.button_delete_color,
+                                             coordinate=[600,self.list_blit.coordinate_update[index][1]+self.list_blit.title_size*2],
+                                             title="X",
+                                             title_size=20,
+                                             tile_color=self.button_delete_title_color,
+                                             command=self.deletar_itens).pack())
+            
+            
+        pygame.display.update()
+        
+        
     def __input(self):
         self.input_size = [800,50]
         self.input_color = "dark_gray"
@@ -98,55 +139,41 @@ class TelaVender:
                                   tag="not")
         self.input_button.pack()
     
-    def run(self):
-        self.window_backup = self.window.copy()
+    def run(self, events):
         self.main_loop = True
-        while self.main_loop:
-            for events in pygame.event.get():
-                if events.type == pygame.QUIT:
-                    pygame.quit()
-                if events.type == pygame.MOUSEBUTTONDOWN:
-                    if self.list_blit:
-                        if True in self.list_blit.iten_verify:
-                            print("entrou aqui nessa budega")
-                            self.inserir_valor()
-                    self.pos = pygame.mouse.get_pos()
-                    self.pesquisa = self.input_button.run(pos=self.pos)
-                    self.imprimir_copy = self.window_backup.copy()
-                    self.imprimir()
-                if self.list_blit:
-                    self.list_blit.run(events)
-                  
-                    
-                    
-                    
-            pygame.display.flip()
+        if events.type == pygame.QUIT:
+            pygame.quit()
+        if events.type == pygame.MOUSEBUTTONDOWN:
+            self.pos = pygame.mouse.get_pos()
+            self.pesquisa = self.input_button.run(pos=self.pos)
+            self.imprimir()
+            if self.list_blit:
+                self.__delete_itens(events)
+                for index,but in enumerate(self.button_delete):
+                    self.index = index
+                    but.run(self.pos)
+        if self.list_blit:
+            self.list_blit.run(events)
         
+        pygame.display.update()
+        
+        
+                    
     def imprimir(self):
         from basico.list import List
         try:
             if self.pesquisa is not None and self.pesquisa != '':
                 try:
-                    self.window.blit(self.imprimir_copy,(0,0))
                     self.consultar_banco = self.consultar(self.pesquisa)
                     self.list_produtos.append(self.consultar_banco[0][1])
-                    self.list_blit = List(window=self.window,
-                                        list_itens=self.list_produtos,
-                                        color="dark_gray",
-                                        title_size=20,
-                                        coordinate=[self.input_coordinate[0],self.input_size[1]+self.input_coordinate[1]],
-                                        bord_size=[500,500],
-                                        tag="close")
-                    
+                    self.pack()
                     self.inserir_valor()
-                    self.update()
-                    self.list_blit.pack()
-                    pygame.display.flip()
-                    self.inserir_copy = self.window.copy()
+                    pygame.display.update()
                 except:
-                    self.window.blit(self.window_error,(0,0))
+                    self.pack()
         except:
             print("produto nao localizado")
+            
     def inserir_valor(self):
         try:
             if self.list_blit:
@@ -156,23 +183,22 @@ class TelaVender:
                     self.cnn = conectar("bdpython/produtos.db")
                     self.valores = (consultar_produto(conn=self.cnn, nome=valor))
                     self.valor.append(self.valores[0][5])
-                    self.imprimir_valor()
+                self.imprimir_valor()
         except:
              pass
     def imprimir_valor(self):
         self.valor_imprimir = sum(self.valor)
-        self.value= insert_text(text=f"R$: {self.valor_imprimir}",
-                        size=self.button_title_size*2,
-                        color= self.button_title_color)
+        self.button_title_finalizar_gambiarra = f"R$: {self.valor_imprimir}"
+        self.pack()
         
         self.window_error = self.window.copy()
-        pygame.display.flip()
+        pygame.display.update()
     def update(self):
             self.window.blit(self.value,
                             (self.button_finalizar_coordinate[0],
                             self.button_finalizar_coordinate[1]+self.title_f_size[1]*3))
             self.window_error = self.window.copy()
-            pygame.display.flip()
+            pygame.display.update()
     def consultar(self, codigo):
         from bdpython.inserir_produdos import conectar,consultar_produto
         print("consulltar")
@@ -183,17 +209,16 @@ class TelaVender:
         except:
             print("produto não encontrado")
     
-kkk = TelaVender()
-kkk.run()
+    def deletar_itens(self):
+        del self.list_produtos[self.index]
+        self.inserir_valor()
+        self.pack()
+        pygame.display.update()
+    def main_loop(self):
+        self.janelatela = TelaVender()
+        self.janelatela.pack()
+        loop = True
+        while loop:
+            for e in pygame.event.get():
+                self.janelatela.run(e)
 
-'''
-janela = Window((1000,600), "white").pack()
-
-lisst = List(janela,["1","2","3"], "black", 20, [300,300], [500,400])
-lisst.pack()
-
-while True:
-    for events in pygame.event.get():
-        if events.type == pygame.MOUSEWHEEL:
-            lisst.run(events)
-    pygame.display.flip()'''

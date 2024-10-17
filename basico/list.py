@@ -48,15 +48,15 @@ class List:
             self.title_size_y = self.text_blit.get_size()
             self.list_itens_blit.append(self.text_blit)
             self.sub_window.blit(self.text_blit, self.coordinate_blit)
-            self.buttons.append(Button(window= self.sub_window,
-                                   size= [self.title_size,self.title_size],
-                                   color= self.color,
-                                   coordinate=[self.bord_size[0]-self.title_size, self.coordinate_blit[1]+self.title_size_y[1]/2],
-                                   title= "X",
-                                   title_size= self.title_size,
-                                   tile_color="red",
-                                   command=self.excluirs).pack())
-            print(self.bord_size[0]-self.title_size+self.coordinates[0])
+            if self.tag is not None:
+                self.buttons.append(Button(window= self.sub_window,
+                                    size= [self.title_size,self.title_size],
+                                    color= self.color,
+                                    coordinate=[self.bord_size[0]-self.title_size, self.coordinate_blit[1]+self.title_size_y[1]/2],
+                                    title= "X",
+                                    title_size= self.title_size,
+                                    tile_color="red",
+                                    command=self.excluirs).pack())
             self.coordinate_blit[1] += self.title_size_y[1]
             self.coordinate_update.append([self.coordinates[0], self.coordinate_blit[1]])
         if self.tag:
@@ -73,25 +73,27 @@ class List:
                 self.update_up()
             elif event.y < 0:
                 self.update_down()
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            self.pos = pygame.mouse.get_pos()
-            for index, but in enumerate(self.buttons):
-                try:
-                    self.clique = collidepoint(self.buttons[index].coordinate, [self.title_size,self.title_size], self.pos, self.coordinates)
-                    self.iten_verify[index] = self.clique
-                    if self.clique == True:
-                        print(self.iten_verify)
-                        self.excluirs(index)
-                except:
-                    pass
+        if self.tag is not None:
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                self.pos = pygame.mouse.get_pos()
+                for index, but in enumerate(self.buttons):
+                    try:
+                        self.clique = collidepoint(self.buttons[index].coordinate, [self.title_size,self.title_size], self.pos, self.coordinates)
+                        self.iten_verify[index] = self.clique
+                        if self.clique == True:
+                            print(self.iten_verify)
+                            self.excluirs(index)
+                    except:
+                        pass
     def update_up(self):
 
         self.sub_window.fill(self.bord_color)  # Limpa o subdisplay
         for index, text in enumerate(self.list_itens_blit):
             self.coordinate_update[index][1] = self.coordinate_update[index][1] - self.title_size_y[1]
             self.sub_window.blit(self.list_itens_blit[index], (0, self.coordinate_update[index][1]))
-            self.buttons[index].coordinate = [self.bord_size[0]-self.title_size, self.coordinate_update[index][1]+self.title_size_y[1]/2]
-            self.buttons[index].pack()
+            if self.tag is not None:
+                self.buttons[index].coordinate = [self.bord_size[0]-self.title_size, self.coordinate_update[index][1]+self.title_size_y[1]/2]
+                self.buttons[index].pack()
 
         # Atualiza a tela principal com o subdisplay
         self.window.blit(self.sub_window, self.coordinates)
@@ -102,9 +104,10 @@ class List:
             for index, text in enumerate(self.list_itens_blit):
                 self.coordinate_update[index][1] = self.coordinate_update[index][1] + self.title_size_y[1]
                 self.sub_window.blit(self.list_itens_blit[index], (0, self.coordinate_update[index][1]))
-                self.buttons[index].coordinate = [self.bord_size[0]-self.title_size, self.coordinate_update[index][1]+self.title_size_y[1]/2]
+                if self.tag is not None:
+                    self.buttons[index].coordinate = [self.bord_size[0]-self.title_size, self.coordinate_update[index][1]+self.title_size_y[1]/2]
 
-                self.buttons[index].pack()
+                    self.buttons[index].pack()
             # Atualiza a tela principal com o subdisplay
             self.window.blit(self.sub_window, self.coordinates)
             pygame.display.flip()
@@ -113,9 +116,10 @@ class List:
         for index, text in enumerate(self.list_itens_blit):
             self.coordinate_update[index][1] = self.coordinate_update[index][1]
             self.sub_window.blit(self.list_itens_blit[index], (0, self.coordinate_update[index][1]))
-            self.buttons[index].coordinate = [self.bord_size[0]-self.title_size, self.coordinate_update[index][1]]
+            if self.tag is not None:
+                self.buttons[index].coordinate = [self.bord_size[0]-self.title_size, self.coordinate_update[index][1]]
 
-            self.buttons[index].pack()
+                self.buttons[index].pack()
         # Atualiza a tela principal com o subdisplay
         self.window.blit(self.sub_window, self.coordinates)
         pygame.display.flip()
